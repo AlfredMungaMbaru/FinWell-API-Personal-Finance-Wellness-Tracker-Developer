@@ -1,1 +1,6 @@
-# Placeholder for WSGI config. Replace with actual wsgi after running django-admin startproject.
+import os
+from django.core.wsgi import get_wsgi_application
+
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'finwell_api.settings')
+
+application = get_wsgi_application()
