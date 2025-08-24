@@ -25,5 +25,78 @@ FinWell API is a backend service for tracking personal finances, helping users m
 ## Running the Project
 - Start the development server: `python manage.py runserver`
 
+
 ## API Endpoints
-*To be filled later*
+
+### Register
+`POST /api/register/`
+**Request:**
+```json
+{
+	"username": "johndoe",
+	"email": "john@example.com",
+	"password": "yourpassword"
+}
+```
+**Response:**
+```json
+{
+	"id": 1,
+	"username": "johndoe",
+	"email": "john@example.com"
+}
+```
+
+### Login
+`POST /api/login/`
+**Request:**
+```json
+{
+	"username": "johndoe",
+	"password": "yourpassword"
+}
+```
+**Response:**
+```json
+{
+	"refresh": "<refresh_token>",
+	"access": "<access_token>"
+}
+```
+
+### Get Profile
+`GET /api/profile/` (Auth required)
+**Headers:**
+`Authorization: Bearer <access_token>`
+**Response:**
+```json
+{
+	"id": 1,
+	"username": "johndoe",
+	"email": "john@example.com",
+	"first_name": "",
+	"last_name": ""
+}
+```
+
+### Update Profile
+`PUT /api/profile/` (Auth required)
+**Headers:**
+`Authorization: Bearer <access_token>`
+**Request:**
+```json
+{
+	"first_name": "John",
+	"last_name": "Doe"
+}
+```
+**Response:**
+```json
+{
+	"id": 1,
+	"username": "johndoe",
+	"email": "john@example.com",
+	"first_name": "John",
+	"last_name": "Doe"
+}
+```
