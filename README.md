@@ -97,6 +97,185 @@ FinWell API is a backend service for tracking personal finances, helping users m
 	"username": "johndoe",
 	"email": "john@example.com",
 	"first_name": "John",
-	"last_name": "Doe"
+  "last_name": "Doe"
+}
+```
+
+### Create Category
+`POST /api/categories/` (Auth required)
+**Headers:**
+`Authorization: Bearer <access_token>`
+**Request:**
+```json
+{
+  "name": "Groceries",
+  "type": "expense"
+}
+```
+**Response:**
+```json
+{
+  "id": 1,
+  "name": "Groceries",
+  "type": "expense"
+}
+```
+
+### List Categories
+`GET /api/categories/` (Auth required)
+**Headers:**
+`Authorization: Bearer <access_token>`
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "name": "Groceries",
+    "type": "expense"
+  },
+  {
+    "id": 2,
+    "name": "Salary",
+    "type": "income"
+  }
+]
+```
+
+### Create Transaction
+`POST /api/transactions/` (Auth required)
+**Headers:**
+`Authorization: Bearer <access_token>`
+**Request:**
+```json
+{
+  "category_id": 1,
+  "amount": 25.50,
+  "date": "2025-08-24",
+  "description": "Supermarket shopping"
+}
+```
+**Response:**
+```json
+{
+  "id": 1,
+  "category": {
+    "id": 1,
+    "name": "Groceries",
+    "type": "expense"
+  },
+  "amount": "25.50",
+  "date": "2025-08-24",
+  "description": "Supermarket shopping"
+}
+```
+
+### List Transactions
+`GET /api/transactions/` (Auth required)
+**Headers:**
+`Authorization: Bearer <access_token>`
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "category": {
+      "id": 1,
+      "name": "Groceries",
+      "type": "expense"
+    },
+    "amount": "25.50",
+    "date": "2025-08-24",
+    "description": "Supermarket shopping"
+  }
+]
+```
+
+### Create Budget
+`POST /api/budgets/` (Auth required)
+**Headers:**
+`Authorization: Bearer <access_token>`
+**Request:**
+```json
+{
+  "category_id": 1,
+  "amount": 500.00,
+  "period": "2025-08"
+}
+```
+**Response:**
+```json
+{
+  "id": 1,
+  "category": {
+    "id": 1,
+    "name": "Food",
+    "type": "expense"
+  },
+  "amount": "500.00",
+  "period": "2025-08",
+  "total_spent": "120.50",
+  "remaining": "379.50"
+}
+```
+
+### List Budgets with Spending
+`GET /api/budgets/` (Auth required)
+**Headers:**
+`Authorization: Bearer <access_token>`
+**Response:**
+```json
+[
+  {
+    "id": 1,
+    "category": {
+      "id": 1,
+      "name": "Food",
+      "type": "expense"
+    },
+    "amount": "500.00",
+    "period": "2025-08",
+    "total_spent": "120.50",
+    "remaining": "379.50"
+  },
+  {
+    "id": 2,
+    "category": {
+      "id": 2,
+      "name": "Transportation",
+      "type": "expense"
+    },
+    "amount": "200.00",
+    "period": "2025-08",
+    "total_spent": "50.00",
+    "remaining": "150.00"
+  }
+]
+```
+
+### Update Budget
+`PUT /api/budgets/{id}/` (Auth required)
+**Headers:**
+`Authorization: Bearer <access_token>`
+**Request:**
+```json
+{
+  "category_id": 1,
+  "amount": 600.00,
+  "period": "2025-08"
+}
+```
+**Response:**
+```json
+{
+  "id": 1,
+  "category": {
+    "id": 1,
+    "name": "Food",
+    "type": "expense"
+  },
+  "amount": "600.00",
+  "period": "2025-08",
+  "total_spent": "120.50",
+  "remaining": "479.50"
 }
 ```
