@@ -9,7 +9,7 @@ class TransactionAPITests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='txnuser', password='txnpass')
         self.client.login(username='txnuser', password='txnpass')
-        self.token = self.client.post(reverse('login'), {'username': 'txnuser', 'password': 'txnpass'}).data['access']
+        self.token = self.client.post(reverse('token_obtain_pair'), {'username': 'txnuser', 'password': 'txnpass'}).data['access']
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
         self.category = Category.objects.create(name='Groceries', type='expense', user=self.user)
 

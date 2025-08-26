@@ -8,7 +8,7 @@ class CategoryAPITests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='catuser', password='catpass')
         self.client.login(username='catuser', password='catpass')
-        self.token = self.client.post(reverse('login'), {'username': 'catuser', 'password': 'catpass'}).data['access']
+        self.token = self.client.post(reverse('token_obtain_pair'), {'username': 'catuser', 'password': 'catpass'}).data['access']
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
 
     def test_create_category(self):

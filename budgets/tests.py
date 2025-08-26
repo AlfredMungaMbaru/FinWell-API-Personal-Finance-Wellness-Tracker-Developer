@@ -11,7 +11,7 @@ class BudgetAPITests(APITestCase):
     def setUp(self):
         self.user = User.objects.create_user(username='budgetuser', password='budgetpass')
         self.client.login(username='budgetuser', password='budgetpass')
-        self.token = self.client.post(reverse('login'), {'username': 'budgetuser', 'password': 'budgetpass'}).data['access']
+        self.token = self.client.post(reverse('token_obtain_pair'), {'username': 'budgetuser', 'password': 'budgetpass'}).data['access']
         self.client.credentials(HTTP_AUTHORIZATION='Bearer ' + self.token)
         self.category = Category.objects.create(name='Food', type='expense', user=self.user)
 

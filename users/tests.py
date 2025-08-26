@@ -13,7 +13,7 @@ class UserAuthTests(APITestCase):
 
     def test_login(self):
         User.objects.create_user(username='testuser', password='testpass123')
-        url = reverse('login')
+        url = reverse('token_obtain_pair')
         data = {'username': 'testuser', 'password': 'testpass123'}
         response = self.client.post(url, data)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
@@ -21,7 +21,7 @@ class UserAuthTests(APITestCase):
 
     def test_profile_get_and_update(self):
         user = User.objects.create_user(username='testuser', password='testpass123', email='test@example.com')
-        url = reverse('login')
+        url = reverse('token_obtain_pair')
         data = {'username': 'testuser', 'password': 'testpass123'}
         response = self.client.post(url, data)
         token = response.data['access']
