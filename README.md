@@ -29,6 +29,18 @@ FinWell API is a comprehensive backend service for tracking personal finances, h
 - Start the development server: `python manage.py runserver`
 - Access the API documentation at: `http://127.0.0.1:8000/api/docs/`
 
+### CORS Configuration
+The API includes CORS (Cross-Origin Resource Sharing) support for frontend integration:
+- **Development**: All origins are allowed (`CORS_ALLOW_ALL_ORIGINS = True`)
+- **Production**: Configure specific allowed origins in `settings.py`:
+  ```python
+  CORS_ALLOWED_ORIGINS = [
+      "http://localhost:3000",
+      "https://yourdomain.com",
+  ]
+  ```
+- CORS headers include support for Authorization, Content-Type, and other common headers
+
 ## API Documentation
 
 ### Interactive Documentation
