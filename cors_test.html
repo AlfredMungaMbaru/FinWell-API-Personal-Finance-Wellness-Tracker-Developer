@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FinWell API CORS Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px 5px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: monospace;
+            white-space: pre-wrap;
+        }
+        .success {
+            background-color: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .info {
+            background-color: #d1ecf1;
+            border: 1px solid #bee5eb;
+            color: #0c5460;
+        }
+        input[type="text"], input[type="email"], input[type="password"] {
+            width: 200px;
+            padding: 8px;
+            margin: 5px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>FinWell API CORS Test</h1>
+        <p>This page demonstrates that the FinWell API supports CORS (Cross-Origin Resource Sharing) for frontend integration.</p>
+        
+        <h2>User Registration Test</h2>
+        <div>
+            <input type="text" id="username" placeholder="Username" value="testuser_cors">
+            <input type="email" id="email" placeholder="Email" value="test@cors.com">
+            <input type="password" id="password" placeholder="Password" value="securepass123">
+            <br>
+            <input type="text" id="firstName" placeholder="First Name" value="Test">
+            <input type="text" id="lastName" placeholder="Last Name" value="User">
+            <br>
+            <button onclick="testRegistration()">Test Registration</button>
+        </div>
+
+        <h2>User Login Test</h2>
+        <div>
+            <input type="text" id="loginUsername" placeholder="Username" value="testuser_cors">
+            <input type="password" id="loginPassword" placeholder="Password" value="securepass123">
+            <br>
+            <button onclick="testLogin()">Test Login</button>
+        </div>
+
+        <h2>API Schema Test</h2>
+        <button onclick="testSchema()">Test API Schema</button>
+
+        <div id="result" class="result info">Ready to test CORS functionality...</div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:8000/api';
+        let accessToken = null;
+
+        function updateResult(message, type = 'info') {
+            const resultDiv = document.getElementById('result');
+            resultDiv.textContent = message;
+            resultDiv.className = `result ${type}`;
+        }
+
+        async function testRegistration() {
+            try {
+                updateResult('Testing user registration...', 'info');
+                
+                const response = await fetch(`${API_BASE_URL}/users/register/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: document.getElementById('username').value,
+                        email: document.getElementById('email').value,
+                        password: document.getElementById('password').value,
+                        first_name: document.getElementById('firstName').value,
+                        last_name: document.getElementById('lastName').value
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    updateResult(`✅ Registration successful!\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, 'success');
+                } else {
+                    updateResult(`⚠️ Registration failed:\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                updateResult(`❌ CORS/Network Error:\n${error.message}\n\nThis suggests CORS might not be configured properly.`, 'error');
+            }
+        }
+
+        async function testLogin() {
+            try {
+                updateResult('Testing user login...', 'info');
+                
+                const response = await fetch(`${API_BASE_URL}/users/login/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: document.getElementById('loginUsername').value,
+                        password: document.getElementById('loginPassword').value
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (response.ok) {
+                    accessToken = data.access;
+                    updateResult(`✅ Login successful!\nStatus: ${response.status}\nAccess Token: ${data.access.substring(0, 50)}...\nRefresh Token: ${data.refresh.substring(0, 50)}...`, 'success');
+                } else {
+                    updateResult(`⚠️ Login failed:\nStatus: ${response.status}\nResponse: ${JSON.stringify(data, null, 2)}`, 'error');
+                }
+            } catch (error) {
+                updateResult(`❌ CORS/Network Error:\n${error.message}`, 'error');
+            }
+        }
+
+        async function testSchema() {
+            try {
+                updateResult('Testing API schema endpoint...', 'info');
+                
+                const response = await fetch(`${API_BASE_URL}/schema/`, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    updateResult(`✅ Schema fetch successful!\nStatus: ${response.status}\nAPI Title: ${data.info?.title || 'N/A'}\nAPI Version: ${data.info?.version || 'N/A'}\nEndpoints: ${Object.keys(data.paths || {}).length} found`, 'success');
+                } else {
+                    updateResult(`⚠️ Schema fetch failed:\nStatus: ${response.status}`, 'error');
+                }
+            } catch (error) {
+                updateResult(`❌ CORS/Network Error:\n${error.message}`, 'error');
+            }
+        }
+
+        // Show initial CORS information
+        window.onload = function() {
+            updateResult('🌐 CORS Test Page Loaded\n\nThis page will test cross-origin requests to the FinWell API.\nIf CORS is configured correctly, the requests will succeed.\nIf not, you\'ll see CORS-related errors.\n\nClick any test button to begin.', 'info');
+        };
+    </script>
+</body>
+</html>
