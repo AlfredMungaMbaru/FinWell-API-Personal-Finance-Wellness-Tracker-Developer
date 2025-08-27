@@ -12,7 +12,8 @@ class BudgetListCreateView(generics.ListCreateAPIView):
         return BudgetSerializer(*args, **kwargs)
 
     def get_queryset(self):
-        return Budget.objects.filter(user=self.request.user)
+        # Optimize with select_related to reduce N+1 queries
+        return Budget.objects.filter(user=self.request.user).select_related('category', 'user')
 
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
@@ -50,7 +51,8 @@ class BudgetDetailView(generics.RetrieveUpdateDestroyAPIView):
         return BudgetSerializer(*args, **kwargs)
 
     def get_queryset(self):
-        return Budget.objects.filter(user=self.request.user)
+        # Optimize with select_related to reduce N+1 queries
+        return Budget.objects.filter(user=self.request.user).select_related('category', 'user')
 
     @extend_schema(
         summary="Get budget details",

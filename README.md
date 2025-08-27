@@ -7,8 +7,11 @@ FinWell API is a comprehensive backend service for tracking personal finances, h
 - User authentication & registration (JWT-based)
 - Categorize transactions (income/expense)
 - Budget planning with spending tracking
-- Financial reports & analytics
+- **Budget Alerts**: Real-time warnings when spending approaches or exceeds budget limits
+- Financial reports & analytics with date filtering
+- **Currency Conversion**: Live exchange rates for international transactions
 - Interactive API documentation with Swagger UI
+- **Optimized Performance**: Database query optimization with select_related/prefetch_related
 
 ## Tech Stack
 - Python
@@ -325,4 +328,77 @@ curl -X GET http://127.0.0.1:8000/api/profile/ \
   "total_spent": "120.50",
   "remaining": "479.50"
 }
+```
+
+## Enhanced Features (Milestone 6)
+
+### Budget Alerts
+When creating or updating transactions, the API automatically checks if spending is approaching or exceeding budget limits:
+
+**Alert Thresholds:**
+- **Near Limit**: 80% of budget used
+- **Exceeded**: Over 100% of budget used
+
+**Example Transaction Response with Alert:**
+```json
+{
+  "id": 5,
+  "category": {
+    "id": 1,
+    "name": "Food",
+    "type": "expense"
+  },
+  "amount": "50.00",
+  "date": "2025-08-27",
+  "description": "Lunch",
+  "budget_alert": {
+    "type": "near_limit",
+    "message": "Caution: You have used 85.0% of your Food budget. Spent: 850.0, Budget: 1000.0"
+  }
+}
+```
+
+### Currency Conversion
+Convert amounts between different currencies using live exchange rates:
+
+`GET /api/convert/?amount=100&from=USD&to=KES`
+
+**Response:**
+```json
+{
+  "amount": 100,
+  "from": "USD",
+  "to": "KES",
+  "converted_amount": 13000,
+  "rate": 130
+}
+```
+
+### Reports & Analytics
+Enhanced reporting with date filtering:
+
+**Financial Summary:**
+`GET /api/reports/summary/?month=8&year=2025`
+
+**Financial Health Score:**
+`GET /api/reports/health-score/`
+
+**Response:**
+```json
+{
+  "score": 75,
+  "message": "Good job! You're within most of your budgets."
+}
+```
+
+### Performance Optimizations
+- Database queries optimized with `select_related()` and `prefetch_related()`
+- Reduced N+1 query problems for transactions and budgets
+- Enhanced API response times for large datasets
+
+## Testing
+Run the comprehensive test suite:
+```bash
+python manage.py test
+python manage.py test tests_milestone6  # Enhanced features tests
 ```
