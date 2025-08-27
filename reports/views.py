@@ -14,6 +14,7 @@ from drf_spectacular.types import OpenApiTypes
 
 class ReportSummaryView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = None  # Will be handled by @extend_schema
 
     @extend_schema(
         summary="Get spending summary",
@@ -23,7 +24,34 @@ class ReportSummaryView(APIView):
             OpenApiParameter(name='end_date', type=OpenApiTypes.DATE, description='End date filter (YYYY-MM-DD)'),
             OpenApiParameter(name='month', type=OpenApiTypes.INT, description='Month filter (1-12)'),
             OpenApiParameter(name='year', type=OpenApiTypes.INT, description='Year filter (e.g., 2024)'),
-        ]
+        ],
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "summary": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "category": {"type": "string"},
+                                "spent": {"type": "number"},
+                                "budget": {"type": "number"},
+                                "remaining": {"type": "number"}
+                            }
+                        }
+                    },
+                    "totals": {
+                        "type": "object",
+                        "properties": {
+                            "spent": {"type": "number"},
+                            "budget": {"type": "number"},
+                            "remaining": {"type": "number"}
+                        }
+                    }
+                }
+            }
+        }
     )
     def get(self, request):
         user = request.user
@@ -89,10 +117,20 @@ class ReportSummaryView(APIView):
 
 class FinancialHealthScoreView(APIView):
     permission_classes = [IsAuthenticated]
+    serializer_class = None  # Will be handled by @extend_schema
 
     @extend_schema(
         summary="Get financial health score",
-        description="Calculate a financial health score (0-100) based on budget adherence for the current month."
+        description="Calculate a financial health score (0-100) based on budget adherence for the current month.",
+        responses={
+            200: {
+                "type": "object",
+                "properties": {
+                    "score": {"type": "integer", "minimum": 0, "maximum": 100},
+                    "message": {"type": "string"}
+                }
+            }
+        }
     )
     def get(self, request):
         user = request.user

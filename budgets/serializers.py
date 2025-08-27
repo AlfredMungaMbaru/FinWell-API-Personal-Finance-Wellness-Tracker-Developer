@@ -5,6 +5,7 @@ from categories.models import Category
 from transactions.models import Transaction
 from django.db.models import Sum
 from decimal import Decimal
+from drf_spectacular.utils import extend_schema_field
 
 class BudgetSerializer(serializers.ModelSerializer):
     category = CategorySerializer(read_only=True)
@@ -53,6 +54,7 @@ class BudgetSerializer(serializers.ModelSerializer):
         
         return data
 
+    @extend_schema_field(serializers.DecimalField(max_digits=12, decimal_places=2))
     def get_total_spent(self, obj):
         # Calculate total spent in this category for this period
         year, month = obj.period.split('-')
@@ -64,6 +66,7 @@ class BudgetSerializer(serializers.ModelSerializer):
         ).aggregate(total=Sum('amount'))['total']
         return spent or Decimal('0.00')
 
+    @extend_schema_field(serializers.DecimalField(max_digits=12, decimal_places=2))
     def get_remaining(self, obj):
         total_spent = self.get_total_spent(obj)
         return obj.amount - total_spent

@@ -97,7 +97,7 @@ REST_FRAMEWORK = {
 
 SPECTACULAR_SETTINGS = {
     'TITLE': 'FinWell API - Personal Finance Wellness Tracker',
-    'DESCRIPTION': 'A comprehensive API for managing personal finances, including user authentication, categories, transactions, and budgets.',
+    'DESCRIPTION': 'A comprehensive API for managing personal finances, including user authentication, categories, transactions, budgets, and financial reports with real-time budget alerts.',
     'VERSION': '1.0.0',
     'SERVE_INCLUDE_SCHEMA': False,
     'COMPONENT_SPLIT_REQUEST': True,
@@ -106,6 +106,10 @@ SPECTACULAR_SETTINGS = {
         'deepLinking': True,
         'persistAuthorization': True,
         'displayOperationId': False,
+        'defaultModelExpandDepth': 1,
+        'defaultModelsExpandDepth': 1,
+        'displayRequestDuration': True,
+        'filter': True,
     },
     'SECURITY': [
         {
@@ -118,6 +122,7 @@ SPECTACULAR_SETTINGS = {
                 'type': 'http',
                 'scheme': 'bearer',
                 'bearerFormat': 'JWT',
+                'description': 'Enter your JWT token in the format: your_token_here (without "Bearer " prefix)'
             }
         }
     },

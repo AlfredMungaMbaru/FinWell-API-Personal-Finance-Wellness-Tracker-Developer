@@ -4,6 +4,7 @@ from categories.serializers import CategorySerializer
 from budgets.models import Budget
 from django.db.models import Sum
 from datetime import datetime
+from drf_spectacular.utils import extend_schema_field
 
 class TransactionSerializer(serializers.ModelSerializer):
 	from categories.models import Category
@@ -27,6 +28,7 @@ class TransactionSerializer(serializers.ModelSerializer):
 			raise serializers.ValidationError('Amount must be positive.')
 		return value
 
+	@extend_schema_field(serializers.JSONField(allow_null=True))
 	def get_budget_alert(self, obj):
 		"""Check if spending is nearing or exceeding budget for the category and month"""
 		if not hasattr(self, 'user'):
